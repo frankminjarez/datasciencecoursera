@@ -8,19 +8,17 @@ rankhospital <- function(state, outcome, num = "best") {
         if (!is.element(state, validStates)) stop("invalid state")
        
         validOutcomes <- c("heart attack", "heart failure", "pneumonia")
-        if (!is.element(outcome, validOutcomes)) stop("invalid outcome")
+        outcomeIndex <- match(outcome, validOutcomes)
+        if (is.na(outcomeIndex)) stop("invalid outcome")
+        
+        ## Get the column name (from documentation)
+        conditions <- c("Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack",
+                        "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure",
+                        "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia")
+        condition <- conditions[outcomeIndex]
         
         ## Reduce data set to one state
         data <- data[data$State == state,]
-        
-        ## Get the column name (from documentation)
-        if (outcome == "heart attack") {
-                condition <- "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack"
-        } else if (outcome == "heart failure") {
-                condition <- "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure"
-        } else {
-                condition <- "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia"
-        }
         
         ## Convert column to numeric and drop NAs
         suppressWarnings(data[, condition] <- as.numeric(data[, condition]))

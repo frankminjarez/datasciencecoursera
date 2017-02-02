@@ -3,19 +3,15 @@ rankall <- function(outcome, num = "best") {
         data <- read.csv("outcome-of-care-measures.csv", 
                          colClasses = "character")
         
-        ## Check outcome is valid
         validOutcomes <- c("heart attack", "heart failure", "pneumonia")
-        if (!any(outcome == validOutcomes)) stop("invalid outcome")
-        
+        outcomeIndex <- match(outcome, validOutcomes)
+        if (is.na(outcomeIndex)) stop("invalid outcome")
         
         ## Get the column name (from documentation)
-        if (outcome == "heart attack") {
-                condition <- "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack"
-        } else if (outcome == "heart failure") {
-                condition <- "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure"
-        } else {
-                condition <- "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia"
-        }
+        conditions <- c("Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack",
+                        "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure",
+                        "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia")
+        condition <- conditions[outcomeIndex]
         
         ## Find all the states in the data set
         validStates <- unique(data["State"])

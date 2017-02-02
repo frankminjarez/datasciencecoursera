@@ -6,24 +6,19 @@ best <- function(state, outcome) {
         ## Check that state and outcome are valid
         validStates <- unique(data[,"State"])
         if (!any(state == validStates)) stop("invalid state")
-        validOutcomes <- c("heart attack", "heart failure", "pneumonia")
-        if (!any(outcome == validOutcomes)) stop("invalid outcome")
         
-        ## Return hospital name in that state with lowest 30-day death
-        ## rate
-       
-        ## Reduce data set to one state
-        data <- data[data$State == state,]
+        validOutcomes <- c("heart attack", "heart failure", "pneumonia")
+        outcomeIndex <- match(outcome, validOutcomes)
+        if (is.na(outcomeIndex)) stop("invalid outcome")
         
         ## Get the column name (from documentation)
-        if (outcome == "heart attack") {
-                condition <- "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack"
-        } else if (outcome == "heart failure") {
-                condition <- "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure"
-        } else {
-                condition <- "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia"
-        }
+        conditions <- c("Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack",
+                        "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure",
+                        "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia")
+        condition <- conditions[outcomeIndex]
         
+        ## Reduce data set to one state
+        data <- data[data$State == state,]
         ## Convert column to numeric and drop NAs
         suppressWarnings(data[, condition] <- as.numeric(data[, condition]))
         data <- data[complete.cases(data[condition]),]
@@ -34,5 +29,8 @@ best <- function(state, outcome) {
         if (length(data) > 1) {
                 data <- data[order(data)]
         }
+        
+        ## Return hospital name in that state with lowest 30-day death
+        ## rate
         data
 }
