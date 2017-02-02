@@ -4,14 +4,10 @@ best <- function(state, outcome) {
                             colClasses = "character")
         
         ## Check that state and outcome are valid
-        validStates <- unique(data["State"])
-        if (!any(state == validStates)) {
-                stop("invalid state")
-        }
+        validStates <- unique(data[,"State"])
+        if (!any(state == validStates)) stop("invalid state")
         validOutcomes <- c("heart attack", "heart failure", "pneumonia")
-        if (!any(outcome == validOutcomes)) {
-                stop("invalid outcome")
-        }
+        if (!any(outcome == validOutcomes)) stop("invalid outcome")
         
         ## Return hospital name in that state with lowest 30-day death
         ## rate

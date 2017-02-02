@@ -5,9 +5,8 @@ rankall <- function(outcome, num = "best") {
         
         ## Check outcome is valid
         validOutcomes <- c("heart attack", "heart failure", "pneumonia")
-        if (!any(outcome == validOutcomes)) {
-                stop("invalid outcome")
-        }
+        if (!any(outcome == validOutcomes)) stop("invalid outcome")
+        
         
         ## Get the column name (from documentation)
         if (outcome == "heart attack") {
@@ -38,7 +37,6 @@ rankall <- function(outcome, num = "best") {
         ## Return a data frame with the hospital names and the
         ## (abbreviated) state name
         hospitalName <- character()
-        hospitalState <- character()
         for (state in validStates) {
                 ## Break out the state data
                 stateData <- data[data$State == state,]
@@ -51,7 +49,6 @@ rankall <- function(outcome, num = "best") {
                 ## Rank too big or small
                 if (rank < 1 || rank > nrow(stateData)) {
                         hospitalName <- c(hospitalName, NA)
-                        hospitalState <- c(hospitalState, state)
                         next
                 }
                 
@@ -65,13 +62,8 @@ rankall <- function(outcome, num = "best") {
                 
                 ## Return hospital name in that state with the given rank
                 ## 30-day death rate
-                
                 hospitalName <- c(hospitalName, stateData$Hospital.Name[rank])
-                hospitalState <- c(hospitalState, state)
-                
         }
-        df <- data.frame(hospitalName, hospitalState)
-        colnames(df) <- c("hospital", "state")
-        rownames(df) <- hospitalState
+        df <- data.frame(hospital=hospitalName, state=validStates, row.names=validStates)
         df
 }

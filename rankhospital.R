@@ -4,14 +4,11 @@ rankhospital <- function(state, outcome, num = "best") {
                          colClasses = "character")
         
         ## Check that state and outcome are valid
-        validStates <- unique(data["State"])
-        if (!any(state == validStates)) {
-                stop("invalid state")
-        }
+        validStates <- unique(data[,"State"])
+        if (!is.element(state, validStates)) stop("invalid state")
+       
         validOutcomes <- c("heart attack", "heart failure", "pneumonia")
-        if (!any(outcome == validOutcomes)) {
-                stop("invalid outcome")
-        }
+        if (!is.element(outcome, validOutcomes)) stop("invalid outcome")
         
         ## Reduce data set to one state
         data <- data[data$State == state,]
